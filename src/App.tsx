@@ -9,7 +9,21 @@ import DashboardPage from '@/pages/DashboardPage'
 import TenantsPage from '@/pages/TenantsPage'
 import TenantDetailPage from '@/pages/TenantDetailPage'
 import SystemSettingsPage from '@/pages/SystemSettingsPage'
-import MarketingPage from '@/pages/MarketingPage'
+import MarketingIndex from '@/pages/Marketing/MarketingIndex'
+import SeoEditor from '@/pages/Marketing/editors/SeoEditor'
+import BrandEditor from '@/pages/Marketing/editors/BrandEditor'
+import HeroEditor from '@/pages/Marketing/editors/HeroEditor'
+import SectionsEditor from '@/pages/Marketing/editors/SectionsEditor'
+import NavLinksEditor from '@/pages/Marketing/editors/NavLinksEditor'
+import IndustriesEditor from '@/pages/Marketing/editors/IndustriesEditor'
+import FeaturesEditor from '@/pages/Marketing/editors/FeaturesEditor'
+import StepsEditor from '@/pages/Marketing/editors/StepsEditor'
+import TestimonialsEditor from '@/pages/Marketing/editors/TestimonialsEditor'
+import FaqsEditor from '@/pages/Marketing/editors/FaqsEditor'
+import PricingPlansEditor from '@/pages/Marketing/editors/PricingPlansEditor'
+import PricingFeaturesEditor from '@/pages/Marketing/editors/PricingFeaturesEditor'
+import FooterEditor from '@/pages/Marketing/editors/FooterEditor'
+import LegalDocumentsEditor from '@/pages/Marketing/editors/LegalDocumentsEditor'
 import BillingPage from '@/pages/BillingPage'
 import PlansPage from '@/pages/PlansPage'
 import AuditLogsPage from '@/pages/AuditLogsPage'
@@ -42,7 +56,24 @@ function ProtectedRoutes() {
         <Route path="/"            element={<DashboardPage />} />
         <Route path="/tenants"     element={<TenantsPage />} />
         <Route path="/tenants/:id" element={<TenantDetailPage />} />
-        <Route path="/marketing/*" element={<MarketingPage />} />
+
+        {/* Marketing CMS */}
+        <Route path="/marketing"                  element={<MarketingIndex />} />
+        <Route path="/marketing/seo"              element={<SeoEditor />} />
+        <Route path="/marketing/brand"            element={<BrandEditor />} />
+        <Route path="/marketing/hero"             element={<HeroEditor />} />
+        <Route path="/marketing/sections"         element={<SectionsEditor />} />
+        <Route path="/marketing/nav-links"        element={<NavLinksEditor />} />
+        <Route path="/marketing/industries"       element={<IndustriesEditor />} />
+        <Route path="/marketing/features"         element={<FeaturesEditor />} />
+        <Route path="/marketing/steps"            element={<StepsEditor />} />
+        <Route path="/marketing/testimonials"     element={<TestimonialsEditor />} />
+        <Route path="/marketing/faqs"             element={<FaqsEditor />} />
+        <Route path="/marketing/pricing-plans"    element={<PricingPlansEditor />} />
+        <Route path="/marketing/pricing-features" element={<PricingFeaturesEditor />} />
+        <Route path="/marketing/footer"           element={<FooterEditor />} />
+        <Route path="/marketing/legal"            element={<LegalDocumentsEditor />} />
+
         <Route path="/billing"     element={<BillingPage />} />
         <Route path="/plans"       element={<PlansPage />} />
         <Route path="/audit"       element={<AuditLogsPage />} />
