@@ -3,11 +3,16 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { AuthProvider } from '@/contexts/AuthContext'
 import { useAuth } from '@/hooks/useAuth'
 import { PlatformAppShell } from '@/components/layout/PlatformAppShell'
+import { Toaster } from '@/components/ui/toaster'
 import LoginPage from '@/pages/LoginPage'
 import DashboardPage from '@/pages/DashboardPage'
 import TenantsPage from '@/pages/TenantsPage'
 import TenantDetailPage from '@/pages/TenantDetailPage'
 import SystemSettingsPage from '@/pages/SystemSettingsPage'
+import MarketingPage from '@/pages/MarketingPage'
+import BillingPage from '@/pages/BillingPage'
+import PlansPage from '@/pages/PlansPage'
+import AuditLogsPage from '@/pages/AuditLogsPage'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -37,6 +42,10 @@ function ProtectedRoutes() {
         <Route path="/"            element={<DashboardPage />} />
         <Route path="/tenants"     element={<TenantsPage />} />
         <Route path="/tenants/:id" element={<TenantDetailPage />} />
+        <Route path="/marketing/*" element={<MarketingPage />} />
+        <Route path="/billing"     element={<BillingPage />} />
+        <Route path="/plans"       element={<PlansPage />} />
+        <Route path="/audit"       element={<AuditLogsPage />} />
         <Route path="/settings"    element={<SystemSettingsPage />} />
         <Route path="*"            element={<Navigate to="/" replace />} />
       </Routes>
@@ -54,6 +63,7 @@ export default function App() {
             <Route path="/*"    element={<ProtectedRoutes />} />
           </Routes>
         </BrowserRouter>
+        <Toaster />
       </AuthProvider>
     </QueryClientProvider>
   )

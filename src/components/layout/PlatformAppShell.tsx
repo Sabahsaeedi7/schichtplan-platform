@@ -3,7 +3,7 @@ import { useAuth } from '@/hooks/useAuth'
 import logoIcon from '@/assets/icon.png'
 import {
   LayoutDashboard, Building2, CreditCard, Package,
-  Settings, FileText, LogOut, Menu
+  Settings, FileText, LogOut, Menu, Megaphone
 } from 'lucide-react'
 import { useState } from 'react'
 import { clsx } from 'clsx'
@@ -11,6 +11,7 @@ import { clsx } from 'clsx'
 const navItems = [
   { to: '/',            icon: LayoutDashboard, label: 'Dashboard' },
   { to: '/tenants',     icon: Building2,       label: 'Tenants'   },
+  { to: '/marketing',   icon: Megaphone,       label: 'Marketing' },
   { to: '/billing',     icon: CreditCard,      label: 'Billing'   },
   { to: '/plans',       icon: Package,         label: 'Plans'     },
   { to: '/audit',       icon: FileText,        label: 'Audit Logs'},

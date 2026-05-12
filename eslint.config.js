@@ -19,5 +19,13 @@ export default defineConfig([
       ecmaVersion: 2020,
       globals: globals.browser,
     },
+    rules: {
+      // shadcn-style UI primitives co-locate component + cva variants in the
+      // same file. Allow that pattern (it is the canonical shadcn convention).
+      'react-refresh/only-export-components': [
+        'warn',
+        { allowConstantExport: true, allowExportNames: ['toast'] },
+      ],
+    },
   },
 ])
