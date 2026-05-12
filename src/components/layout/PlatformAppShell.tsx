@@ -1,8 +1,9 @@
 import { NavLink, useNavigate } from 'react-router-dom'
-import { useAuth } from '@/contexts/AuthContext'
+import { useAuth } from '@/hooks/useAuth'
+import logoIcon from '@/assets/icon.png'
 import {
   LayoutDashboard, Building2, CreditCard, Package,
-  Settings, FileText, LogOut, Menu, X, ShieldCheck
+  Settings, FileText, LogOut, Menu
 } from 'lucide-react'
 import { useState } from 'react'
 import { clsx } from 'clsx'
@@ -47,9 +48,13 @@ export function PlatformAppShell({ children }: { children: React.ReactNode }) {
       >
         {/* Logo */}
         <div className="flex items-center gap-3 px-6 py-5 border-b border-[hsl(var(--sidebar-border))]">
-          <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center">
-            <ShieldCheck className="w-4 h-4 text-white" />
-          </div>
+          <img
+            src={logoIcon}
+            alt="SchichtPlan+"
+            width={32}
+            height={32}
+            className="w-8 h-8 rounded-lg object-contain flex-shrink-0"
+          />
           <div>
             <div className="text-sm font-bold text-white">SchichtPlan+</div>
             <div className="text-[10px] text-[hsl(var(--muted-foreground))] uppercase tracking-widest">Platform Admin</div>

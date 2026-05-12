@@ -4,15 +4,23 @@ import {
   AreaChart, Area, BarChart, Bar, XAxis, YAxis,
   Tooltip, ResponsiveContainer, CartesianGrid,
 } from 'recharts'
-import { TrendingUp, TrendingDown, Building2, Users, AlertTriangle, DollarSign } from 'lucide-react'
+import { TrendingUp, TrendingDown, Building2, Users, AlertTriangle, DollarSign, type LucideIcon } from 'lucide-react'
 import { clsx } from 'clsx'
 import { format } from 'date-fns'
 
-function KpiCard({ title, value, sub, trend, icon: Icon, color = 'blue' }: {
-  title: string; value: string | number; sub?: string
-  trend?: number; icon: any; color?: string
-}) {
-  const colorMap: Record<string, string> = {
+type KpiColor = 'blue' | 'green' | 'orange' | 'red'
+
+interface KpiCardProps {
+  title: string
+  value: string | number
+  sub?: string
+  trend?: number
+  icon: LucideIcon
+  color?: KpiColor
+}
+
+function KpiCard({ title, value, sub, trend, icon: Icon, color = 'blue' }: KpiCardProps) {
+  const colorMap: Record<KpiColor, string> = {
     blue: 'text-blue-400 bg-blue-500/10',
     green: 'text-green-400 bg-green-500/10',
     orange: 'text-orange-400 bg-orange-500/10',
@@ -41,7 +49,18 @@ function KpiCard({ title, value, sub, trend, icon: Icon, color = 'blue' }: {
   )
 }
 
-const CustomTooltip = ({ active, payload, label }: any) => {
+interface TooltipPayloadEntry {
+  value: number | string
+  name: string
+}
+
+interface CustomTooltipProps {
+  active?: boolean
+  payload?: TooltipPayloadEntry[]
+  label?: string | number
+}
+
+function CustomTooltip({ active, payload, label }: CustomTooltipProps) {
   if (!active || !payload?.length) return null
   return (
     <div className="card !p-3 text-xs">
@@ -81,7 +100,6 @@ export default function DashboardPage() {
   const mrr = kpiData?.mrr
   const tenants = kpiData?.active_tenants
   const users = kpiData?.total_users
-  const churn = kpiData?.churn_rate
   const planDist = kpiData?.plan_distribution ?? []
 
   return (
@@ -178,7 +196,7 @@ export default function DashboardPage() {
           {kpiData?.recent_signups?.length === 0 && (
             <div className="text-sm text-[hsl(var(--muted-foreground))] py-4 text-center">No recent signups</div>
           )}
-          {kpiData?.recent_signups?.map((s: any) => (
+          {kpiData?.recent_signups?.map((s) => (
             <div key={s.id} className="flex items-center justify-between py-2.5 table-row last:border-0">
               <div>
                 <div className="text-sm font-medium text-white">{s.name}</div>
@@ -197,7 +215,7 @@ export default function DashboardPage() {
         <div className="card">
           <h2 className="text-sm font-semibold text-white mb-4">Recent Platform Activity</h2>
           <div className="divide-y divide-[hsl(var(--border))]">
-            {activity.slice(0, 10).map((log: any) => (
+            {activity.slice(0, 10).map((log) => (
               <div key={log.id} className="flex items-center justify-between py-2.5">
                 <div className="flex items-center gap-3">
                   <div className="w-2 h-2 rounded-full bg-blue-400 flex-shrink-0" />
