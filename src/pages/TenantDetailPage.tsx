@@ -148,38 +148,39 @@ export default function TenantDetailPage() {
             <span className="text-xs text-[hsl(var(--muted-foreground))] ml-1 font-normal">(overrides plan defaults)</span>
           </div>
           {!features && <div className="text-sm text-[hsl(var(--muted-foreground))]">Loading features…</div>}
-          {features?.map((f: any) => (
-            <div key={f.id} className="flex items-center justify-between py-2.5 table-row last:border-0">
-              <div>
-                <div className="text-sm font-medium text-white">{f.name}</div>
-                <div className="text-xs text-[hsl(var(--muted-foreground))]">
-                  {f.in_plan ? '✓ In plan' : '✗ Not in plan'}
-                  {f.override && (
-                    <span className={clsx('ml-2', f.override.is_enabled ? 'text-green-400' : 'text-red-400')}>
-                      {f.override.is_enabled ? '→ Enabled by override' : '→ Disabled by override'}
-                    </span>
+          {features?.map((f) => {
+            const override = f.override
+            return (
+              <div key={f.id} className="flex items-center justify-between py-2.5 table-row last:border-0">
+                <div>
+                  <div className="text-sm font-medium text-white">{f.name}</div>
+                  <div className="text-xs text-[hsl(var(--muted-foreground))]">
+                    {f.in_plan ? '✓ In plan' : '✗ Not in plan'}
+                    {override && (
+                      <span className={clsx('ml-2', override.is_enabled ? 'text-green-400' : 'text-red-400')}>
+                        {override.is_enabled ? '→ Enabled by override' : '→ Disabled by override'}
+                      </span>
+                    )}
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  {override ? (
+                    <button
+                      onClick={() => featureMut.mutate({ featureId: f.id, isEnabled: !override.is_enabled })}
+                      className={clsx('btn text-xs !px-2.5 !py-1', override.is_enabled ? 'btn-danger' : 'btn-primary')}
+                    >
+                      {override.is_enabled ? 'Disable' : 'Enable'}
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => featureMut.mutate({ featureId: f.id, isEnabled: true })}
+                      className="btn-ghost text-xs text-green-400 hover:bg-green-500/10"
+                    >+ Grant Override</button>
                   )}
                 </div>
               </div>
-              <div className="flex items-center gap-2">
-                {f.override ? (
-                  <>
-                    <button
-                      onClick={() => featureMut.mutate({ featureId: f.id, isEnabled: !f.override.is_enabled })}
-                      className={clsx('btn text-xs !px-2.5 !py-1', f.override.is_enabled ? 'btn-danger' : 'btn-primary')}
-                    >
-                      {f.override.is_enabled ? 'Disable' : 'Enable'}
-                    </button>
-                  </>
-                ) : (
-                  <button
-                    onClick={() => featureMut.mutate({ featureId: f.id, isEnabled: true })}
-                    className="btn-ghost text-xs text-green-400 hover:bg-green-500/10"
-                  >+ Grant Override</button>
-                )}
-              </div>
-            </div>
-          ))}
+            )
+          })}
         </div>
       )}
     </div>

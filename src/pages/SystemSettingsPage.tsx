@@ -1,56 +1,74 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { isAxiosError } from 'axios'
 import { settingsApi } from '@/api/client'
+import type { PlatformSetting } from '@/api/types'
 import { Save, Send, CheckCircle, XCircle, Loader2 } from 'lucide-react'
-
-type Setting = { key: string; value: string | null; type: string; group: string; description: string }
 
 const groupLabels: Record<string, string> = {
   smtp: 'SMTP Email Configuration',
   general: 'General Settings',
 }
 
+const MASKED_VALUE = '••••••••'
+
 export default function SystemSettingsPage() {
   const qc = useQueryClient()
-  const [values, setValues]   = useState<Record<string, string>>({})
-  const [dirty, setDirty]     = useState(false)
+  // `overrides` tracks values the user has edited in the form. We render
+  // `initialValues ∪ overrides` so the form is a pure derivation of server
+  // data + edits — no setState-in-effect needed.
+  const [overrides, setOverrides] = useState<Record<string, string>>({})
   const [testEmail, setTestEmail] = useState('')
   const [testResult, setTestResult] = useState<{ ok: boolean; msg: string } | null>(null)
 
   const { data, isLoading } = useQuery({
     queryKey: ['platform', 'settings'],
-    queryFn: () => settingsApi.list().then((r) => r.data.data as Setting[]),
-    onSuccess: (data: Setting[]) => {
-      const init: Record<string, string> = {}
-      data.forEach((s: Setting) => { if (s.value && s.value !== '••••••••') init[s.key] = s.value })
-      setValues(init)
-    },
-  } as any)
+    queryFn: () => settingsApi.list().then((r) => r.data.data),
+  })
+
+  const initialValues = useMemo<Record<string, string>>(() => {
+    if (!data) return {}
+    const init: Record<string, string> = {}
+    data.forEach((s) => {
+      if (s.value && s.value !== MASKED_VALUE) init[s.key] = s.value
+    })
+    return init
+  }, [data])
+
+  const values: Record<string, string> = { ...initialValues, ...overrides }
+  const dirty = Object.keys(overrides).length > 0
 
   const saveMut = useMutation({
     mutationFn: () => settingsApi.update(
       Object.entries(values).map(([key, value]) => ({ key, value: value || null }))
     ),
-    onSuccess: () => { setDirty(false); qc.invalidateQueries({ queryKey: ['platform', 'settings'] }) },
+    onSuccess: () => {
+      setOverrides({})
+      qc.invalidateQueries({ queryKey: ['platform', 'settings'] })
+    },
   })
 
   const testMut = useMutation({
     mutationFn: () => settingsApi.testSmtp(testEmail),
     onSuccess: (r) => setTestResult({ ok: true, msg: r.data.message }),
-    onError:   (e: any) => setTestResult({ ok: false, msg: e.response?.data?.message ?? 'Test failed' }),
+    onError: (err) => {
+      const message = isAxiosError(err)
+        ? (err.response?.data as { message?: string } | undefined)?.message
+        : undefined
+      setTestResult({ ok: false, msg: message ?? 'Test failed' })
+    },
   })
 
   const handleChange = (key: string, value: string) => {
-    setValues((v) => ({ ...v, [key]: value }))
-    setDirty(true)
+    setOverrides((o) => ({ ...o, [key]: value }))
   }
 
   if (isLoading) {
     return <div className="text-[hsl(var(--muted-foreground))] text-sm">Loading settings…</div>
   }
 
-  const settings = (data as Setting[]) ?? []
-  const grouped  = settings.reduce<Record<string, Setting[]>>((acc, s) => {
+  const settings = data ?? []
+  const grouped  = settings.reduce<Record<string, PlatformSetting[]>>((acc, s) => {
     acc[s.group] = acc[s.group] ?? []
     acc[s.group].push(s)
     return acc
@@ -80,7 +98,7 @@ export default function SystemSettingsPage() {
               <input
                 className="input"
                 type={s.key.includes('password') ? 'password' : 'text'}
-                placeholder={s.value === '••••••••' ? 'Leave blank to keep existing' : `Enter ${s.key}`}
+                placeholder={s.value === MASKED_VALUE ? 'Leave blank to keep existing' : `Enter ${s.key}`}
                 value={values[s.key] ?? ''}
                 onChange={(e) => handleChange(s.key, e.target.value)}
               />

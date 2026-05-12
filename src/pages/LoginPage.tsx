@@ -1,7 +1,9 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useAuth } from '@/contexts/AuthContext'
-import { ShieldCheck, Eye, EyeOff } from 'lucide-react'
+import { isAxiosError } from 'axios'
+import { useAuth } from '@/hooks/useAuth'
+import { Eye, EyeOff } from 'lucide-react'
+import logoWordmark from '@/assets/logo.png'
 
 export default function LoginPage() {
   const { login }    = useAuth()
@@ -19,8 +21,11 @@ export default function LoginPage() {
     try {
       await login(email, password)
       navigate('/')
-    } catch (err: any) {
-      setError(err.response?.data?.message ?? 'Login failed. Please check your credentials.')
+    } catch (err) {
+      const message = isAxiosError(err)
+        ? (err.response?.data as { message?: string } | undefined)?.message
+        : undefined
+      setError(message ?? 'Login failed. Please check your credentials.')
     } finally {
       setLoading(false)
     }
@@ -31,11 +36,13 @@ export default function LoginPage() {
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-blue-600 mb-4">
-            <ShieldCheck className="w-7 h-7 text-white" />
-          </div>
+          <img
+            src={logoWordmark}
+            alt="SchichtPlan+"
+            className="mx-auto h-12 w-auto mb-4 object-contain"
+          />
           <h1 className="text-2xl font-bold text-white">Platform Admin</h1>
-          <p className="text-sm text-[hsl(var(--muted-foreground))] mt-1">SchichtPlan+ Super Admin Console</p>
+          <p className="text-sm text-[hsl(var(--muted-foreground))] mt-1">Super Admin Console</p>
         </div>
 
         {/* Form */}

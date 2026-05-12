@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { tenantsApi } from '@/api/client'
 import { useNavigate } from 'react-router-dom'
-import { Search, ChevronDown, ExternalLink, Eye, PauseCircle, PlayCircle, LogIn } from 'lucide-react'
+import { Search, ChevronDown, Eye, PauseCircle, PlayCircle, LogIn } from 'lucide-react'
 import { format } from 'date-fns'
 import { clsx } from 'clsx'
 
@@ -108,7 +108,7 @@ export default function TenantsPage() {
               {!isLoading && tenants.length === 0 && (
                 <tr><td colSpan={7} className="px-4 py-12 text-center text-[hsl(var(--muted-foreground))]">No tenants found</td></tr>
               )}
-              {tenants.map((t: any) => (
+              {tenants.map((t) => (
                 <tr key={t.id} className="table-row">
                   <td className="px-4 py-3">
                     <div className="font-medium text-white">{t.name}</div>
